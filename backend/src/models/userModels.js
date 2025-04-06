@@ -10,9 +10,12 @@ const userSchema = new mongoose.Schema({
             quantity: { type: Number, default: 1 }
         }
     ],
+    role : { type : String,enum : ["Seller","user"],default : "user"},
     address: { type: mongoose.Schema.Types.ObjectId, ref: 'Address' },
     orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
     createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model('User',userSchema);
+
+module.exports = User;
