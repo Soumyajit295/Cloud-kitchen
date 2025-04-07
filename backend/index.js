@@ -3,6 +3,8 @@ const express = require('express')
 const cookieParser = require('cookie-parser')
 const connectToDatabase = require('./src/database/connection')
 const userRouter = require('./src/routes/userRoutes')
+const sellerRouter = require('./src/routes/sellerRoutes')
+const cartRouter = require('./src/routes/cartRoutes')
 
 
 const app = express()
@@ -15,6 +17,8 @@ app.use(cookieParser())
 
 /* Routes configaration */
 app.use('/api/users',userRouter)
+app.use('/api/seller',sellerRouter)
+app.use('/api/cart',cartRouter)
 
 const PORT = process.env.PORT || 4000
 

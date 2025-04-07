@@ -10,4 +10,6 @@ const foodSchema = new mongoose.Schema({
     createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Food', foodSchema);
+const Food = mongoose.model('Food',foodSchema)
+
+module.exports = Food;

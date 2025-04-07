@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
             quantity: { type: Number, default: 1 }
         }
     ],
-    role : { type : String,enum : ["Seller","user"],default : "user"},
+    role : { type : String,enum : ["seller","user"],default : "user"},
     address: { type: mongoose.Schema.Types.ObjectId, ref: 'Address' },
     orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }],
     createdAt: { type: Date, default: Date.now }
