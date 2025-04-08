@@ -89,6 +89,9 @@ const login = async(req,res)=>{
             }
         )
         const loggedInUser = await User.findOne({email : user.email}).select("-password")
+        .populate("address")
+        .populate("selectedAddress")
+        
         if(!loggedInUser){
             return res.status(400).json({
                 success : false,
