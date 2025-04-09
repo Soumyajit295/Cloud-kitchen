@@ -10,6 +10,11 @@ const userSchema = new mongoose.Schema({
             quantity: { type: Number, default: 1 }
         }
     ],
+    contactNumber: { 
+        type: String, 
+        required: true,
+        match: [/^[0-9]{10}$/, 'Please enter a valid 10-digit contact number']
+    },
     role : { type : String,enum : ["seller","user"],default : "user"},
     address: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Address' }],
     selectedAddress: { type: mongoose.Schema.Types.ObjectId, ref: 'Address', default: null },
