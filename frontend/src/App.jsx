@@ -1,19 +1,24 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import Landingpage from "./pages/landingPage";
 import Navbar from "./components/Navbar";
 import Signin from "./components/Signin";
 import Signup from "./components/Signup";
+import Admin from "./pages/Admin";
+import Unauthorized from "./pages/Unauthorized";
+import AdminAuth from "./components/AdminAuth";
+import Orders from "./pages/Orders";
+import Foodlist from "./pages/Foodlist";
+import LoginAuth from "./components/LoginAuth";
+import Cart from "./pages/Cart";
+import Myorder from "./pages/Myorder";
+import { setShowSignin, setShowSignup } from "./Redux/Slices/authSlice";
 
 function App() {
   const menuRef = useRef(null);
-  const [showSignin, setShowSignin] = useState(false);
-  const [showSignup, setShowSignup] = useState(false);
-
-  useEffect(() => {
-    console.log("Signin pop up: ", showSignin);
-    console.log("Signup pop up: ", showSignup);
-  }, [showSignin, showSignup]);
+  const dispatch = useDispatch();
+  const { showSignin, showSignup } = useSelector((state) => state.auth);
 
   const scrollToMenu = () => {
     menuRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -21,32 +26,30 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Navbar 
-        scrollToMenu={scrollToMenu} 
-        onSigninClick={() => setShowSignin(true)} 
+      <Navbar
+        scrollToMenu={scrollToMenu}
+        onSigninClick={() => dispatch(setShowSignin(true))}
       />
       <Routes>
         <Route path="/" element={<Landingpage menuRef={menuRef} />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+
+        <Route element={<LoginAuth />}>
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/myorder" element={<Myorder />} />
+        </Route>
+        <Route element={<AdminAuth />}>
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin/foodlist" element={<Foodlist />} />
+          <Route path="/admin/order" element={<Orders />} />
+        </Route>
       </Routes>
 
       {showSignin && (
-        <Signin
-          onClose={() => setShowSignin(false)}
-          onSwitchToSignup={() => {
-            setShowSignin(false);
-            setShowSignup(true);
-          }}
-        />
+        <Signin/>
       )}
-
       {showSignup && (
-        <Signup 
-        onClose={() => setShowSignup(false)} 
-        onSwitchToSignin={() => {
-          setShowSignin(true);
-          setShowSignup(false);
-        }}
-        />
+        <Signup/>
       )}
     </BrowserRouter>
   );

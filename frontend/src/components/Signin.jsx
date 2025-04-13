@@ -1,16 +1,25 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { signin } from '../Redux/Slices/userauthSlice';
+import { onSwitchToSignup, setShowSignin } from '../Redux/Slices/authSlice';
 
-function Signin({ onClose, onSwitchToSignup }) {
+function Signin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
 
+  const onClose = () => {
+    dispatch(setShowSignin(false));
+  };
+
+  const toggleToSignup = () => {
+    dispatch(onSwitchToSignup());
+  };
+
   const onSignin = async (e) => {
     e.preventDefault();
     const data = { email, password };
-    const res = await dispatch(signin(data)); // Don't forget `await`
+    const res = await dispatch(signin(data));
     if (res?.payload?.success) {
       onClose();
     }
@@ -55,7 +64,7 @@ function Signin({ onClose, onSwitchToSignup }) {
         </form>
         <p className="text-center mt-4 text-sm text-gray-600">
           Don’t have an account?{' '}
-          <button onClick={onSwitchToSignup} className="text-orange-600 font-semibold hover:underline">
+          <button onClick={toggleToSignup} className="text-orange-600 font-semibold hover:underline">
             Create one
           </button>
         </p>

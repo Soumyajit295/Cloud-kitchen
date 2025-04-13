@@ -1,23 +1,33 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { signup } from '../Redux/Slices/userauthSlice';
+import { onSwitchToSignin, setShowSignup } from '../Redux/Slices/authSlice';
 
-function Signup({ onClose , onSwitchToSignin }) {
-  const [name,setName] = useState('')
-  const [email,setEmail] = useState('')
-  const [password,setPassword] = useState('')
-  const [contactNumber,setContactNumber] = useState('')
+function Signup() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [contactNumber, setContactNumber] = useState('');
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  const onSignup = async(e)=>{
-    e.preventDefault()
-    const data = {name,email,password,contactNumber}
-    const res = await dispatch(signup(data))
-    if(res?.payload?.success){
-        onSwitchToSignin()
+  const onClose = () => {
+    dispatch(setShowSignup(false));
+  };
+
+  const toggleToSignin = () => {
+    dispatch(onSwitchToSignin());
+  };
+
+  const onSignup = async (e) => {
+    e.preventDefault();
+    const data = { name, email, password, contactNumber };
+    const res = await dispatch(signup(data));
+    if (res?.payload?.success) {
+      dispatch(onSwitchToSignin());
     }
-  }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
       <div className="bg-white rounded-2xl p-8 w-full max-w-md relative shadow-lg animate-fade-in">
@@ -28,43 +38,49 @@ function Signup({ onClose , onSwitchToSignin }) {
           ✕
         </button>
         <h1 className="text-center text-2xl font-semibold mb-5">Create New Account</h1>
-        <form 
-        onSubmit={onSignup}
-        className="space-y-5">
+        <form onSubmit={onSignup} className="space-y-5">
           <div>
             <label className="block mb-1">Name</label>
             <input
               type="text"
-              onChange={(e)=>setName(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               placeholder="Enter your name"
               className="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-orange-500"
+              required
             />
           </div>
           <div>
             <label className="block mb-1">Email</label>
             <input
               type="email"
-              onChange={(e)=>setEmail(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               className="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-orange-500"
+              required
             />
           </div>
           <div>
-            <label className="block mb-1">Contact no</label>
+            <label className="block mb-1">Contact No</label>
             <input
               type="text"
-              onChange={(e)=>setContactNumber(e.target.value)}
+              value={contactNumber}
+              onChange={(e) => setContactNumber(e.target.value)}
               placeholder="Enter your contact number"
               className="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-orange-500"
+              required
             />
           </div>
           <div>
             <label className="block mb-1">Password</label>
             <input
               type="password"
-              onChange={(e)=>setPassword(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Create a password"
               className="w-full p-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-orange-500"
+              required
             />
           </div>
           <button type="submit" className="w-full bg-orange-500 text-white py-2 rounded-xl hover:bg-orange-600">
@@ -73,7 +89,7 @@ function Signup({ onClose , onSwitchToSignin }) {
         </form>
         <p className="text-center mt-4 text-sm text-gray-600">
           Already have an account?{' '}
-          <button onClick={onSwitchToSignin} className="text-orange-600 font-semibold hover:underline">
+          <button onClick={toggleToSignin} className="text-orange-600 font-semibold hover:underline">
             Login
           </button>
         </p>

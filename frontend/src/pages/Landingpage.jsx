@@ -2,41 +2,62 @@ import React, { useState } from "react";
 import header_img from "../assets/header_img.png";
 import Menu from "./Menu";
 import { useSelector } from "react-redux";
+import menu_1 from "../assets/menu_1.png";
+import menu_2 from "../assets/menu_2.png";
+import menu_3 from "../assets/menu_3.png";
+import menu_4 from "../assets/menu_4.png";
+import menu_5 from "../assets/menu_5.png";
+import menu_6 from "../assets/menu_6.png";
+import menu_7 from "../assets/menu_7.png";
+import menu_8 from "../assets/menu_8.png";
+import Category from "../components/Category";
+import Herosection from "../components/Herosection";
 
 function Landingpage({ menuRef }) {
+  const [category,setCategory] = useState('')
 
   const scrollToMenu = () => {
     menuRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-  const categories = ["Salad","Rolls","Deserts","Sandwitch","Cake","Pure veg","Pasta","Noodles"]
+
+  const categories = [
+    {name : "Salad",img : menu_1},
+    {name : "Rolls",img : menu_2},
+    {name : "Deserts",img : menu_3},
+    {name : "Sandwitch",img : menu_4},
+    {name : "Cake",img : menu_5},
+    {name : "Pure veg",img : menu_6},
+    {name : "Pasta",img : menu_7},
+    {name : "Noodles",img : menu_8},
+  ];
+
+  const onChangeCategory = (item)=>{
+    setCategory(item.name)
+  }
 
   return (
     <div className="w-full px-10 py-5">
-      <div className="w-full justify-center hidden sm:flex relative">
-        <img className="w-full align-middle" src={header_img} alt="header_img" />
-        <div className="absolute top-10 md:top-20 lg:top-1/2 lg:-translate-y-1/2 left-5">
-          <h1 className="text-white font-semibold text-4xl md:text-5xl mb-2">Order your</h1>
-          <h1 className="text-white font-semibold text-4xl md:text-5xl">favourite food here</h1>
-          <p className="text-slate-300 font-light text-xl">
-            Feel the taste of home's kitchen, fast delivery and COD available
-          </p>
-          <button onClick={scrollToMenu} className="px-5 py-2 rounded-2xl bg-slate-100 mt-5">
-            View menu
-          </button>
-        </div>
-      </div>
-      <div className="w-full mt-10">
-        <h1 className="text-4xl text-slate-800 font-semibold mb-3">Explore our menu</h1>
-        <p>Choose your food as per your mood,Good foods makes mood happy</p>
-      </div>
-      <div className="w-full overflow-auto p-5 border mt-5">
-        <div className="p-2 border w-1/8">
-          <div className="w-full rounded-full border p-2">
+      <Herosection scrollToMenu={scrollToMenu} header_img={header_img}/>
 
-          </div>
+      {/* Menu Intro */}
+      <div className="w-full mt-10">
+        <h1 className="text-4xl text-slate-800 font-semibold mb-3">
+          Explore our menu
+        </h1>
+        <p>Choose your food as per your mood, Good food makes mood happy</p>
+      </div>
+
+      {/* Scrollable Categories */}
+      <div className="w-full overflow-x-auto p-5 mt-5 scrollbar-thin scrollbar-thumb-slate-400 scrollbar-track-slate-200">
+        <div className="flex flex-nowrap gap-6">
+          {categories.map((item, index) => (
+            <Category item={item} key={index} onChangeCategory={()=>onChangeCategory(item)}/>
+          ))}
         </div>
       </div>
-      <Menu ref={menuRef} />
+
+      {/* Menu Component */}
+      <Menu ref={menuRef} category={category} />
     </div>
   );
 }

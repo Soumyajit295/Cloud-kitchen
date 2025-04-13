@@ -10,3 +10,4 @@ sellerRouter.delete('/removefood/:foodid',isLoggedIn,isSeller('seller'),removeFo
 sellerRouter.patch('/updatefood/:foodid',isLoggedIn,isSeller('seller'),upload.single('image'),updateFood)
 
 module.exports = sellerRouter
+
