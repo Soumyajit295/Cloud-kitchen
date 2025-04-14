@@ -23,6 +23,29 @@ const getAllfoods = async(req,res)=>{
     }
 }
 
+const getSingleFood = async(req,res)=>{
+    const {foodid} = req.params
+    try{
+        const food = await Food.findById(foodid)
+        if(!food){
+            return res.status(400).json({
+                success : false,
+                message : "Failed to get food"
+            })
+        }
+        return res.status(200).json({
+            success : true,
+            data : food
+        })
+    }   
+    catch(err){
+        return res.status(500).json({
+            status : false,
+            message : "Failed to get the food"
+        })
+    }
+}
+
 const getMenu = async(req,res)=>{
     try{
         const menu = await Food.find({instock : true})
@@ -79,5 +102,6 @@ const getMenuByCategory = async(req,res)=>{
 module.exports = {
     getAllfoods,
     getMenu,
-    getMenuByCategory
+    getMenuByCategory,
+    getSingleFood
 }

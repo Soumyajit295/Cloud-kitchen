@@ -52,8 +52,8 @@ const addFood = async (req, res) => {
 
 const removeFood = async(req,res)=>{
     try{
-        const {foodId} = req.params
-        const food = await Food.findOneAndDelete(foodId)
+        const {foodid} = req.params
+        const food = await Food.findOneAndDelete(foodid)
         if(!food){
             return res.status(400).json({
                 success : false,
@@ -62,7 +62,8 @@ const removeFood = async(req,res)=>{
         }
         return res.status(200).json({
             success : true,
-            message : "Food removed successfully"
+            message : "Food removed successfully",
+            data : foodid
         })
     }
     catch(err){
