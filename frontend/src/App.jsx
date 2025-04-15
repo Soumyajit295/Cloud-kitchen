@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Landingpage from "./pages/landingPage";
@@ -14,6 +14,7 @@ import LoginAuth from "./components/LoginAuth";
 import Cart from "./pages/Cart";
 import Myorder from "./pages/Myorder";
 import { setShowSignin, setShowSignup } from "./Redux/Slices/authSlice";
+import { validateUser } from "./Redux/Slices/userauthSlice";
 
 function App() {
   const menuRef = useRef(null);
@@ -23,6 +24,10 @@ function App() {
   const scrollToMenu = () => {
     menuRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  useEffect(()=>{
+    dispatch(validateUser())
+  },[dispatch])
 
   return (
     <BrowserRouter>

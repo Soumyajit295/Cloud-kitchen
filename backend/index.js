@@ -10,6 +10,7 @@ const addressRouter = require('./src/routes/addressRoutes')
 const orderRouter = require('./src/routes/orderRoutes')
 const paymentRouter = require('./src/routes/paymentRoutes')
 const foodRouter = require('./src/routes/foodRoutes')
+const authRouter = require('./src/routes/authRoute')
 
 
 const app = express()
@@ -23,6 +24,7 @@ app.use(cookieParser())
 
 /* Routes configaration */
 app.use('/api/users',userRouter)
+app.use('/api/auth',authRouter)
 app.use('/api/seller',sellerRouter)
 app.use('/api/cart',cartRouter)
 app.use('/api/foods',foodRouter)

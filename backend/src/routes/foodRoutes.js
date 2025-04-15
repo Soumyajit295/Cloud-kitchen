@@ -7,6 +7,6 @@ const foodRouter = express.Router()
 foodRouter.get('/allfoods',isLoggedIn,isSeller('seller'),getAllfoods)
 foodRouter.get('/singleFood/:foodid',isLoggedIn,getSingleFood)
 foodRouter.get('/menu',getMenu)
-foodRouter.get('/desiredmenu',getMenuByCategory)
+foodRouter.post('/desiredmenu',getMenuByCategory)
 
 module.exports = foodRouter

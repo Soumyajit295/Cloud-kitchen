@@ -79,6 +79,8 @@ const login = async (req, res) => {
         _id: user._id,
         email: user.email,
         role: user.role,
+        address : user.address,
+        selectedAddress : user.selectedAddress
       },
       process.env.jwt_secret,
       {

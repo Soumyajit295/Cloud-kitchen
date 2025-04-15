@@ -6,7 +6,7 @@ const cartRouter = express.Router()
 
 cartRouter.post('/addtocart',isLoggedIn,addToCart)
 cartRouter.post('/removefromcart/:foodid',isLoggedIn,removeFromCart)
-cartRouter.patch('/incrementquantity/:foodid',isLoggedIn,updateCartQuantity)
+cartRouter.patch('/updatequantity/:foodid',isLoggedIn,updateCartQuantity)
 cartRouter.get('/getcart',isLoggedIn,getCartDetails)
 
 module.exports = cartRouter

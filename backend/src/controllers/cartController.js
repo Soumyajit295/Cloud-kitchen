@@ -56,6 +56,7 @@ const removeFromCart = async(req,res)=>{
         }
         user.cartItems = user.cartItems.filter((item)=>item.food.toString()!==foodid)
         await user.save()
+        await user.populate("cartItems.food")
         return res.status(200).json({
             success : true,
             message : "item removed from cart",
@@ -70,64 +71,71 @@ const removeFromCart = async(req,res)=>{
     }
 }
 
-const updateCartQuantity = async(req,res)=>{
-    const {_id} = req.user
-    const {foodid} = req.params
-    const {quantity} = req.body
-    try{
-        const parsedQuantity = Number(quantity)
-        console.log("Parsed quantity : ",parsedQuantity)
-        if(isNaN(parsedQuantity) || parsedQuantity <= 0){
+const updateCartQuantity = async (req, res) => {
+    const { _id } = req.user;
+    const { foodid } = req.params;
+    const { quantity } = req.body;
+
+    try {
+        const parsedQuantity = Number(quantity);
+        if (isNaN(parsedQuantity) || parsedQuantity <= 0) {
             return res.status(400).json({
-                success : false,
-                message : "Enter a valid quantity"
-            })
+                success: false,
+                message: "Enter a valid quantity",
+            });
         }
-        
-        const user = await User.findById(_id)
-        if(!user){
+
+        const user = await User.findById(_id);
+        if (!user) {
             return res.status(400).json({
-                success : false,
-                message : "Acoount not found"
-            })
+                success: false,
+                message: "Account not found",
+            });
         }
-        let itemFound = false
-        let quantityExeceed = false
-        user.cartItems.forEach((item)=>{
-            if(item.food.toString() === foodid){
-                if(parsedQuantity > 10){
-                    item.quantity = 10
-                    itemFound = true
-                    quantityExeceed = true
+
+        let itemFound = false;
+        let quantityExceeded = false;
+
+        user.cartItems.forEach((item) => {
+            if (item.food.toString() === foodid) {
+                if (parsedQuantity > 10) {
+                    item.quantity = 10;
+                    quantityExceeded = true;
+                } else {
+                    item.quantity = parsedQuantity;
                 }
-                else{
-                    item.quantity = parsedQuantity
-                    itemFound = true
-                }
+                itemFound = true;
             }
-        })
-        if(!itemFound){
+        });
+
+        if (!itemFound) {
             return res.status(400).json({
-                success : false,
-                message : "Food not found"
-            })
+                success: false,
+                message: "Food not found in cart",
+            });
         }
-        await user.save()
+
+        await user.save();
+
+        // Populate cart items with food details
+        await user.populate("cartItems.food");
+
         return res.status(200).json({
             success: true,
-            message: quantityExeceed 
-                ? "Quantity exceeded maximum limit. Set to 10." 
+            message: quantityExceeded
+                ? "Quantity exceeded maximum limit. Set to 10."
                 : "Item quantity changed successfully",
-            data: user.cartItems
-        })        
-    }
-    catch(err){
+            data: user.cartItems,
+        });
+    } catch (err) {
+        console.error(err);
         return res.status(500).json({
-            success : false,
-            message : "Something went wrong while adding item"
-        })
+            success: false,
+            message: "Something went wrong while updating item quantity",
+        });
     }
-}
+};
+
 
 const getCartDetails = async(req,res)=>{
     const {_id} = req.user

@@ -80,9 +80,10 @@ const getMenuByCategory = async(req,res)=>{
     try{
         const menu = await Food.find({category : category})
         if(!menu || menu.length === 0){
-            return res.status(400).json({
-                success : false,
-                message : "No food available"
+            return res.status(200).json({
+                success : true,
+                message : "No food available",
+                data : []
             })
         }
         return res.status(200).json({

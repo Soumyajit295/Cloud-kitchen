@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import header_img from "../assets/header_img.png";
 import Menu from "./Menu";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import menu_1 from "../assets/menu_1.png";
 import menu_2 from "../assets/menu_2.png";
 import menu_3 from "../assets/menu_3.png";
@@ -12,9 +12,11 @@ import menu_7 from "../assets/menu_7.png";
 import menu_8 from "../assets/menu_8.png";
 import Category from "../components/Category";
 import Herosection from "../components/Herosection";
+import { fetchDesiredMenu } from "../Redux/Slices/foodSlice";
 
 function Landingpage({ menuRef }) {
   const [category,setCategory] = useState('')
+  const dispatch = useDispatch()
 
   const scrollToMenu = () => {
     menuRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -23,16 +25,17 @@ function Landingpage({ menuRef }) {
   const categories = [
     {name : "Salad",img : menu_1},
     {name : "Rolls",img : menu_2},
-    {name : "Deserts",img : menu_3},
-    {name : "Sandwitch",img : menu_4},
+    {name : "Desserts",img : menu_3},
+    {name : "Sandwich",img : menu_4},
     {name : "Cake",img : menu_5},
-    {name : "Pure veg",img : menu_6},
+    {name : "Pure Veg",img : menu_6},
     {name : "Pasta",img : menu_7},
     {name : "Noodles",img : menu_8},
   ];
 
   const onChangeCategory = (item)=>{
     setCategory(item.name)
+    dispatch(fetchDesiredMenu({category : item.name}))
   }
 
   return (

@@ -5,6 +5,12 @@ const addAddress = async (req, res) => {
     const { locality, city, zipcode, state, landmark } = req.body
     const { _id } = req.user
 
+    console.log("Locality : ",locality)
+    console.log("City : ",city)
+    console.log("Zipcode : ",zipcode)
+    console.log("State : ",state)
+    console.log("Landmark : ",landmark)
+
     if (!locality || !city || !zipcode || !state || !landmark) {
         return res.status(400).json({
             success: false,
