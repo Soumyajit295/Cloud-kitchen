@@ -6,6 +6,7 @@ import { setShowSignin } from "./authSlice";
 const initialState = {
   user: JSON.parse(localStorage.getItem("user")) || {},
   isLoggedIn: JSON.parse(localStorage.getItem("loggedInStatus")) || false,
+  orders : []
 };
 
 export const signup = createAsyncThunk(
@@ -100,7 +101,7 @@ export const addAddress = createAsyncThunk(
 
 export const setSelectedAddress = createAsyncThunk(
   'user/selectAddress',
-  async(addressid,{rejectWithValue})=>{
+  async({addressid},{rejectWithValue})=>{
     try{
       const res = axios.patch(`/api/address/setorderaddress/${addressid}`)
       toast.promise(res,{
@@ -109,6 +110,19 @@ export const setSelectedAddress = createAsyncThunk(
         error : (err)=>err?.response?.data?.message
       })
       return (await res).data
+    }
+    catch(err){
+      return rejectWithValue(err.message)
+    }
+  }
+)
+
+export const fetchMyOrders = createAsyncThunk(
+  'user/fetchorders',
+  async(_,{rejectWithValue})=>{
+    try{
+      const promise = await axios.get('/api/users/myorders',{withCredentials : true})
+      return promise.data
     }
     catch(err){
       return rejectWithValue(err.message)
@@ -155,11 +169,21 @@ const userSlice = createSlice({
       state.user.selectedAddress = action.payload.selectedAddress
       const updatedUser = {
         ...state.user,
-        selectedAddress : action.payload.selectedAddress
+        selectedAddress : action.payload.selectedAddress,
+        address : action.payload.address
       }
       state.user = updatedUser
       localStorage.setItem('user',JSON.stringify(updatedUser))
     })
+    builder.addCase(fetchMyOrders.fulfilled, (state, action) => {
+      state.orders = action.payload.data;
+      const updatedUser = {
+        ...state.user,
+        orders: action.payload.data,
+      };
+      state.user = updatedUser;
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    });    
   }
 });
 

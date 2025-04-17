@@ -6,6 +6,7 @@ import PaymentCard from "../components/PaymentCard";
 import { FaTrashAlt } from "react-icons/fa";
 import { FiChevronDown } from "react-icons/fi";
 import QuantityModel from "../components/QuantityModel";
+import { fetchMyAddress } from "../Redux/Slices/addressSlice";
 
 function Cart() {
   const dispatch = useDispatch();
@@ -19,6 +20,10 @@ function Cart() {
   useEffect(() => {
     dispatch(getCartDetails());
   }, [dispatch]);
+
+  useEffect(()=>{
+    dispatch(fetchMyAddress());
+  },[dispatch])
 
   const handleOpenModal = (item) => {
     setCurrentFood(item.food._id);

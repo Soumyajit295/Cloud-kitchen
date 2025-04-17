@@ -125,10 +125,11 @@ const setSelectedAddress = async(req,res)=>{
         }
         user.selectedAddress = addressid
         await user.save()
-        const updatedUser = await User.findById(_id).populate("selectedAddress")
+        const updatedUser = await User.findById(_id).populate("address").populate("selectedAddress")
         return res.status(200).json({
             success : true,
             message : "Order address selected successfully",
+            address : updatedUser.address,
             selectedAddress : updatedUser.selectedAddress
         })
     }

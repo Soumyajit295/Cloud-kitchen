@@ -43,7 +43,7 @@ export const fetchFoodList = createAsyncThunk(
   }
 );
 
-// Change food stock (for edit and stock management)
+
 export const changeFoodStock = createAsyncThunk(
   "admin/changeFoodStock",
   async (data, { rejectWithValue }) => {
@@ -87,6 +87,7 @@ export const editFood = createAsyncThunk(
 export const deleteFood = createAsyncThunk(
   'admin/removeFood',
   async(foodid,{rejectWithValue})=>{
+    console.log("FOODID : ",foodid)
     try{
       const promise = axios.delete(`/api/seller/removefood/${foodid}`)
       toast.promise(promise,{
@@ -120,7 +121,6 @@ const adminSlice = createSlice({
       })
       .addCase(addFood.fulfilled, (state, action) => {
         state.loading = false;
-        state.foods.push(action.payload.newFood);
       })
       .addCase(addFood.rejected, (state, action) => {
         state.loading = false;

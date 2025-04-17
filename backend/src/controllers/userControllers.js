@@ -156,11 +156,36 @@ const getMyOrders = async (req, res) => {
       message: "Something went wrong during fetching orders",
     });
   }
-};
+}
+
+const getMyAddressess = async(req,res)=>{
+  const {_id} = req.user
+  try{
+    const user = await User.findById(_id).populate("address").populate("selectedAddress")
+    if(!user){
+      return res.status(400).json({
+        success : false,
+        message : "Account not found"
+      })
+    }
+    return res.status(200).json({
+      success : true,
+      address : user.address,
+      selectedAddress : user.selectedAddress
+    })
+  }
+  catch(err){
+    return res.status(500).json({
+      success : false,
+      message : "Failed to get the addresses"
+    })
+  }
+}
 
 module.exports = {
   register,
   login,
   logout,
   getMyOrders,
+  getMyAddressess
 };

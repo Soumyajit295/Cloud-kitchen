@@ -4,7 +4,8 @@ import AddressListModel from './AddressListModel';
 import AddressFormModal from './AddressForm';
 
 function AddressCard() {
-  const { user } = useSelector((state) => state.user);
+  const {selectedAddress} = useSelector((state)=>state.address)
+  const user = JSON.parse(localStorage.getItem('user'))
   const [showAddressList,setShowAddressList] = useState(false);
   const [showNewAddressForm,setShowAddressForm] = useState(false);
 
@@ -14,9 +15,9 @@ function AddressCard() {
     <div className="w-full lg:w-[45%] bg-white p-5 rounded-xl shadow-md border border-gray-200">
       <h2 className="text-lg font-semibold text-gray-800 mb-3">Delivery Address</h2>
 
-      {user.selectedAddress ? (
+      {selectedAddress ? (
         <p className="text-sm text-gray-600 mb-4 leading-relaxed">
-          {`${user.selectedAddress.locality}, ${user.selectedAddress.landmark}, ${user.selectedAddress.city}, ${user.selectedAddress.zipcode}, ${user.selectedAddress.state}`}
+          {`${selectedAddress.locality}, ${selectedAddress.landmark}, ${selectedAddress.city}, ${selectedAddress.zipcode}, ${selectedAddress.state}`}
         </p>
       ) : (
         <p className="text-sm text-gray-500 mb-4">No address selected yet.</p>

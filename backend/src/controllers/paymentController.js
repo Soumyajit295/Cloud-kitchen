@@ -19,7 +19,9 @@ const createRazorpayOrder = async (req, res) => {
       });
     }
     let calculatedTotal = 0;
+    console.log(user.cartItems)
     for (let item of user.cartItems) {
+      console.log("I am come till here")
       calculatedTotal += item.food.price * item.quantity;
     }
     const option = {
@@ -49,6 +51,7 @@ const createRazorpayOrder = async (req, res) => {
 const verifyPayment = async (req, res) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
     req.body;
+
   const { _id } = req.user;
 
   if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
@@ -107,9 +110,17 @@ const verifyPayment = async (req, res) => {
       message: `Something went wrong during payment verification: ${err.message}`,
     });
   }
-};
+}
+
+const getKey = async(req,res)=>{
+  return res.status(200).json({
+    success : true,
+    data : process.env.RAZORPAY_KEY_ID
+  })
+}
 
 module.exports = {
   createRazorpayOrder,
   verifyPayment,
+  getKey
 };

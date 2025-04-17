@@ -27,7 +27,6 @@ function Navbar({ scrollToMenu, onSigninClick }) {
     <div className="w-full px-10 py-5 flex items-center justify-between relative">
       <img className="w-35" src={logo} alt="Brand_logo" />
 
-      {/* Desktop menu */}
       <div className="hidden md:flex w-1/2 px-10 gap-x-10 justify-center text-xl">
         <Link to="/" className="hover:text-orange-600 transition-all">
           Home

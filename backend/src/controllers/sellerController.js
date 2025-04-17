@@ -39,7 +39,6 @@ const addFood = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "Food listed successfully",
-            data: newItem
         })
 
     } catch (err) {
@@ -52,8 +51,7 @@ const addFood = async (req, res) => {
 
 const removeFood = async(req,res)=>{
     try{
-        const {foodid} = req.params
-        const food = await Food.findOneAndDelete(foodid)
+        const food = await Food.findByIdAndDelete(foodid)
         if(!food){
             return res.status(400).json({
                 success : false,

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Landingpage from "./pages/landingPage";
 import Navbar from "./components/Navbar";
@@ -20,6 +20,7 @@ function App() {
   const menuRef = useRef(null);
   const dispatch = useDispatch();
   const { showSignin, showSignup } = useSelector((state) => state.auth);
+
 
   const scrollToMenu = () => {
     menuRef.current?.scrollIntoView({ behavior: "smooth" });

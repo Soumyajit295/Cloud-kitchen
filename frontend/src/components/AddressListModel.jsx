@@ -3,13 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedAddress } from '../Redux/Slices/userauthSlice';
 
 function AddressListModel({ onClose }) {
-//   const { user } = useSelector((state) => state.user);
-  const user = JSON.parse(localStorage.getItem('user'))
-  
-  console.log(user)
+  const {addressess} = useSelector((state)=>state.address)
   const dispatch = useDispatch()
 
   const onChangeOrderAddress = async(address)=>{
+    console.log(address)
     const res = await dispatch(setSelectedAddress({addressid : address._id}))
     if(res?.payload?.success){
         onClose()
@@ -21,11 +19,11 @@ function AddressListModel({ onClose }) {
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-6 relative">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Saved Addresses</h2>
 
-        {user.address.length === 0 ? (
+        {addressess.length === 0 ? (
           <p className="text-gray-600 text-center py-8">Sorry, no saved address found.</p>
         ) : (
           <div className="grid gap-4 max-h-96 overflow-y-auto">
-            {user.address.map((add, index) => (
+            {addressess.map((add, index) => (
               <div
                 onClick={()=>onChangeOrderAddress(add)}
                 key={index}
