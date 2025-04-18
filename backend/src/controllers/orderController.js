@@ -1,68 +1,72 @@
+const Razorpay = require("razorpay");
 const Order = require("../models/ordersModels");
 const Food = require("../models/productModels");
 const User = require("../models/userModels");
 
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_SECRET,
+});
 
-const createOrder = async(req,res)=>{
-    const {_id} = req.user
-    try{
-        const user = await User.findById(_id)
-        if(!user){
-            return res.status(400).json({
-                success : false,
-                message : "Account not found"
-            })
-        }
-        if(!user.cartItems || user.cartItems.length === 0){
-            return res.status(400).json({
-                success : false,
-                message : "Cart is empty"
-            })
-        }
-        let calculatedTotal = 0
-        for (const item of user.cartItems) {
-            const food = await Food.findById(item.food);
-            if (!food) {
-              return res.status(400).json({
-                success: false,
-                message: "Food not found",
-              });
-            }
-            if(item.quantity <= 0){
-                return res.status(400).json({
-                    success : false,
-                    message : `Invalid quantity for ${food.name}`
-                })
-            }
-            calculatedTotal += food.price * item.quantity;
-          }
-        const order = await Order.create({
-            user : user._id,
-            orderItems : user.cartItems,
-            totalAmount : calculatedTotal,
-            paymentMode : "COD"
-        })
-        if(!order){
-            return res.status(400).json({
-                success : false,
-                message : "Failed to create the order"
-            })
-        }
-        user.orders.push(order._id)
-        user.cartItems.splice(0)
-        await user.save()
-        return res.status(200).json({
-            success : true,
-            message : "Order successfull"
-        })
+const createOrder = async (req, res) => {
+  const { _id } = req.user;
+  try {
+    const user = await User.findById(_id);
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Account not found",
+      });
     }
-    catch(err){
-        return res.status(500).json({
-            success: false,
-            message: "Something went wrong during order creation",
+    if (!user.cartItems || user.cartItems.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Cart is empty",
+      });
+    }
+    let calculatedTotal = 0;
+    for (const item of user.cartItems) {
+      const food = await Food.findById(item.food);
+      if (!food) {
+        return res.status(400).json({
+          success: false,
+          message: "Food not found",
         });
+      }
+      if (item.quantity <= 0) {
+        return res.status(400).json({
+          success: false,
+          message: `Invalid quantity for ${food.name}`,
+        });
+      }
+      calculatedTotal += food.price * item.quantity;
     }
-}
+    const order = await Order.create({
+      user: user._id,
+      orderItems: user.cartItems,
+      totalAmount: calculatedTotal,
+      paymentMode: "COD",
+    });
+    if (!order) {
+      return res.status(400).json({
+        success: false,
+        message: "Failed to create the order",
+      });
+    }
+    user.orders.push(order._id);
+    user.cartItems.splice(0);
+    await user.save();
+    return res.status(200).json({
+      success: true,
+      message: "Order successfull",
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong during order creation",
+    });
+  }
+};
 
 const cancelOrder = async (req, res) => {
   const { orderid } = req.params;
@@ -92,12 +96,31 @@ const cancelOrder = async (req, res) => {
       });
     }
 
+    if (order.paymentMode === "Online" && order.razorpay_payment_id) {
+      try {
+        const refund = await razorpay.payments.refund(
+          order.razorpay_payment_id,
+          {
+            amount: order.totalAmount * 100,
+          }
+        );
+        console.log("Refund initiated : ", refund);
+      } catch (err) {
+        console.error("Refund failed:", err);
+        return res.status(500).json({
+          success: false,
+          message: "Refund failed. Please try again later.",
+        });
+      }
+    }
+
     order.orderStatus = "Cancelled";
     await order.save();
 
     return res.status(200).json({
       success: true,
-      message: "Order has been cancelled successfully",
+      message: `Order canceled.${order.paymentMode === "Online" ? ' Refund initiated.' : ''}`,
+      data : orderid
     });
   } catch (err) {
     return res.status(500).json({
@@ -137,8 +160,8 @@ const updateOrderStatus = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Order status updated successfully",
-      orderid : orderid,
-      orderStatus : orderStatus
+      orderid: orderid,
+      orderStatus: orderStatus,
     });
   } catch (err) {
     return res.status(500).json({
@@ -149,36 +172,35 @@ const updateOrderStatus = async (req, res) => {
 };
 
 const getAllOrders = async (req, res) => {
-  try{
+  try {
     const orders = await Order.find()
-                  .populate({
-                    path : 'user',
-                    select : 'name contactNumber selectedAddress',
-                    populate : {
-                        path : 'selectedAddress'
-                    }
-                  })
-                  .populate({
-                    path : 'orderItems.food',
-                    select : 'name'
-                  })
-    if(!orders){
-        return res.status(400).json({
-            success : false,
-            message : "Failed to get the order details"
-        })
+      .populate({
+        path: "user",
+        select: "name contactNumber selectedAddress",
+        populate: {
+          path: "selectedAddress",
+        },
+      })
+      .populate({
+        path: "orderItems.food",
+        select: "name",
+      });
+    if (!orders) {
+      return res.status(400).json({
+        success: false,
+        message: "Failed to get the order details",
+      });
     }
     return res.status(200).json({
-        success : true,
-        message : "Order details fetched successfully",
-        data : orders
-    })
-  }
-  catch(err){
+      success: true,
+      message: "Order details fetched successfully",
+      data: orders,
+    });
+  } catch (err) {
     return res.status(500).json({
-        success : false,
-        message : "Something went wrong during fetching order details"
-    })
+      success: false,
+      message: "Something went wrong during fetching order details",
+    });
   }
 };
 
@@ -186,5 +208,5 @@ module.exports = {
   createOrder,
   cancelOrder,
   updateOrderStatus,
-  getAllOrders
+  getAllOrders,
 };

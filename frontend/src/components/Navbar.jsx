@@ -47,6 +47,7 @@ function Navbar({ scrollToMenu, onSigninClick }) {
           isLoggedIn && user.role!=='seller' && (
             <FaShoppingCart
               size={30}
+              onClick={()=>navigate('/cart')}
               className="text-slate-900 hover:text-orange-600 transition-all cursor-pointer"
             />
           )
@@ -55,6 +56,7 @@ function Navbar({ scrollToMenu, onSigninClick }) {
           <FaUserCircle
             size={30}
             onClick={() => setIsDropDownOpen(!isDropDownOpen)}
+            className="cursor-pointer"
           />
         ) : (
           <button
@@ -85,12 +87,20 @@ function Navbar({ scrollToMenu, onSigninClick }) {
                   </Link>
                   <Link
                     to="/admin/foodlist"
+                    onClick={() => {
+                      setIsSidebarOpen(false);
+                      setIsDropDownOpen(false);
+                    }}
                     className="block px-4 py-2 rounded-md hover:bg-orange-100 hover:text-orange-600 font-medium transition-colors duration-200"
                   >
                     Foods
                   </Link>
                   <Link
                     to="/admin/order"
+                    onClick={() => {
+                      setIsSidebarOpen(false);
+                      setIsDropDownOpen(false);
+                    }}
                     className="block px-4 py-2 rounded-md hover:bg-orange-100 hover:text-orange-600 font-medium transition-colors duration-200"
                   >
                     View Orders

@@ -4,11 +4,13 @@ import Loader from "../components/Loader";
 import { fetchMenu } from "../Redux/Slices/foodSlice";
 import MenuCard from "../components/MenuCard";
 import { addToCart } from "../Redux/Slices/cartSlice";
+import { useNavigate } from "react-router-dom";
 
 const Menu = forwardRef((props, ref) => {
   const { menuFoods, menuLoading } = useSelector((state) => state.food);
   const dispatch = useDispatch();
   const [cart, setCart] = useState([]);
+  const navigate = useNavigate()
 
   useEffect(() => {
     dispatch(fetchMenu());
@@ -19,6 +21,7 @@ const Menu = forwardRef((props, ref) => {
     const res = await dispatch(addToCart({ ingridiants: cart }));
     if (res?.payload?.success) {
       setCart([]);
+      navigate('/cart')
     }
   };
 

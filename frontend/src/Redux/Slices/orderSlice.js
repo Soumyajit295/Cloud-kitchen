@@ -43,6 +43,24 @@ export const createOnlineOrder = createAsyncThunk(
   }
 )
 
+export const cancelOrder = createAsyncThunk(
+  'order/cancelorder',
+  async(orderid,{rejectWithValue})=>{
+    try{
+      const res = axios.patch(`/api/order/cancelorder/${orderid}`)
+      toast.promise(res,{
+        loading : "Cancling order",
+        success : (res)=>res?.data?.message,
+        error : (err)=>err?.response?.data?.message
+      })
+      return (await res).data
+    }
+    catch(err){
+      return rejectWithValue(err.message)
+    }
+  }
+)
+
 export const getKey = createAsyncThunk(
   'order/getKey',
   async(_,{rejectWithValue})=>{
