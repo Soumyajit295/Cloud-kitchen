@@ -50,6 +50,7 @@ const addFood = async (req, res) => {
 }
 
 const removeFood = async(req,res)=>{
+    const {foodid} = req.params
     try{
         const food = await Food.findByIdAndDelete(foodid)
         if(!food){
